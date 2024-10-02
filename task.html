@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Pet Depot</title>
+  </head>
+  <body>
+    <div id="app" class="p-3">
+      <div class="flex bg-gray-100 align-center justify-between px-2 py-3">
+        <h1 class="font-bold text-3xl flex-1">Pet Depot</h1>
+        <div class="flex justify-end">
+          <button
+            v-on:click="goToCheckout"
+            class="px-3 py-1 flex align-center justify-center w-[18%] text-right bg-white"
+          >
+            <span
+              >{{checkout.items.length > 0 ? checkout.items.length : ""}}</span
+            >
+            <img
+              v-bind:alt="checkoutAlt"
+              v-bind:src="checkoutIcon"
+              class="w-[30%]"
+            />
+            <span>Checkout</span>
+          </button>
+        </div>
+      </div>
+      <div v-if="!isCheckout" class="w-[50%] mt-4 flex space-x-6 align-center">
+        <img
+          v-bind:alt="item.imageAlt"
+          v-bind:src="item.imagePath"
+          class="w-[30%] self-center"
+        />
+        <div class="space-y-2">
+          <h3 class="font-semibold text-2xl">{{item.name}}</h3>
+          <p>{{item.description}}</p>
+          <p>${{item.price.toFixed(2)}}, {{item.inventory}} remaining</p>
+          <button
+            v-on:click="(item) => addToCart(item)"
+            v-bind:disabled="this.item.inventory == 0"
+            class="px-3 py-1 bg-blue-700 text-white text-sm disabled:bg-gray-500"
+          >
+            Add to cart
+          </button>
+        </div>
+      </div>
+      <div v-else class="mt-4">
+        <h1 class="font-bold text-3xl flex-1">Welcome to Checkout</h1>
+      </div>
+    </div>
+  </body>
+  <script>
+    let app = new Vue({
+      el: "#app",
+      data: {
+        checkoutAlt: "Pet food image",
+        checkoutIcon: "checkout-icon.png",
+        isCheckout: false,
+        item: {
+          name: "Cat Food, 25Ib bag",
+          description:
+            "A 25 pound of irresistible, organic goodness for your cat.",
+          price: 20.0,
+          imageAlt: `${this.name} picture`,
+          imagePath: "cat-icon.png",
+          inventory: 5,
+        },
+        checkout: {
+          items: [],
+        },
+      },
+      methods: {
+        addToCart: function (item) {
+          this.checkout.items.push(item);
+          this.item.inventory--;
+        },
+        goToCheckout: function () {
+          this.isCheckout = !this.isCheckout;
+        },
+      },
+    });
+  </script>
+</html>
